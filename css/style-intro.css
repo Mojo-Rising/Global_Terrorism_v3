@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Inconsolata', monospace;
+    line-height: 1.55;
+    padding-bottom: 200px;
+}
+
+.container-wide {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.container-small {
+    margin: 0 auto;
+    max-width: 500px;
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a {
+    font-family: 'Roboto';
+    color: #333;
+}
+
+
+h1 {
+    font-size: 2em;
+    color: #000;
+}
+
+h2 {
+    font-size: 1em;
+    font-weight: 100;
+    color: grey;
+}
+
+h3 {
+    font-size: .95em;
+    display: inline;
+    color: #000;
+}
+
+h4 {
+    font-size: .95em;
+    color: grey;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+p {
+    font-size: .95em;
+    padding: .5em 0;
+}
+span {
+    font-size: .8em;
+    float: right;
+    color: grey;
+}
+
+span.by {
+    float: left;
+    margin: 10px 0;
+}
+
+hr {
+    border: .5px solid #000;
+    margin: 60px 0 20px;
+}
+
+hr.divider-small {
+    border: .5px solid gainsboro;
+    margin: 80px auto 60px;
+    width: 100px;
+}
+
+
+
+/* **************** */
+
+.header-img {
+    background: url(../img/world_bg.svg);
+    height: 350px;
+    max-width: 1100px;
+    background-position: 0% 45%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 80px auto 30px;
+}
+
+.placeholder-img {
+    background-color: gainsboro;
+    height: 100px;
+    width: 100%;
+    margin: 50px 0;
+}
+
+.placeholder-graph {
+    background-color: gainsboro;
+    height: 400px;
+    width: 100%;
+    margin: 30px 0;
+}
+
+header {
+    padding: 100px 0 0 0;
+}
+
+.btn-explore {
+    width: 100%;
+    border: 1px solid deepskyblue;
+    background-color: skyblue;
+    padding: 100px;
+    margin: 20px 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: #fff;
+}
+
+.btn-explore p {
+    color: #fff;
+    font-size: 4em;
+}
+
+.title {
+    margin-bottom: 1em;
+}

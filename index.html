@@ -1,247 +1,122 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>WebGL Globe</title>
-    <meta charset="utf-8">
-    <style type="text/css">
-      html {
-        height: 100%;
-      }
-      body {
-        margin: 0;
-        padding: 0;
-        background: #000000 url(/globe/loading.gif) center center no-repeat;
-        color: #ffffff;
-        font-family: sans-serif;
-        font-size: 13px;
-        line-height: 20px;
-        height: 100%;
-      }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Global Terrorism Database</title>
 
-      #info {
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Roboto:400,700&display=swap" rel="stylesheet">
 
-        font-size: 11px;
-        position: absolute;
-        bottom: 5px;
-        background-color: rgba(0,0,0,0.8);
-        border-radius: 3px;
-        right: 10px;
-        padding: 10px;
+    <link rel="stylesheet" href="css/style-intro.css">
+</head>
+<body>
+    <div class="container-wide">
+        <div class="container-small">
+            <header>
+                <h1>Taking a Look at Global Terrorism</h1>
+                <h2>Exploring trends, victims and targets, and terrorist organizations and cells over time.</h2>
 
-      }
-
-      #currentInfo {
-        width: 270px;
-        position: absolute;
-        left: 20px;
-        top: 63px;
-
-        background-color: rgba(0,0,0,0.2);
-
-        border-top: 1px solid rgba(255,255,255,0.4);
-        padding: 10px;
-      }
-
-      a {
-        color: #aaa;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-
-      .bull {
-        padding: 0 5px;
-        color: #555;
-      }
-
-      #title {
-        position: absolute;
-        top: 20px;
-        width: 270px;
-        left: 20px;
-        background-color: rgba(0,0,0,0.2);
-        border-radius: 3px;
-        font: 20px Georgia;
-        padding: 10px;
-      }
-
-      .year {
-        font: 16px Georgia;
-        line-height: 26px;
-        height: 30px;
-        text-align: center;
-        float: left;
-        width: 90px;
-        color: rgba(255, 255, 255, 0.4);
-
-        cursor: pointer;
-        -webkit-transition: all 0.1s ease-out;
-      }
-
-      .year:hover, .year.active {
-        font-size: 23px;
-        color: #fff;
-      }
-
-      #ce span {
-        display: none;
-      }
-
-      #ce {
-        width: 107px;
-        height: 55px;
-        display: block;
-        position: absolute;
-        bottom: 15px;
-        left: 20px;
-        background: url(/globe/ce.png);
-      }
-
-
-    </style>
-    <link rel="stylesheet" href="css/reset.css" type="text/css"/>
-    <link rel="stylesheet" href="css/style.css" type="text/css"/>
-  </head>
-  <body>
-
-    <header>
-      <div id="main-title">
-        <p class="small-title">Global Terrorism Database, 1970-2017</p>
-      </div>
-      <!-- <div class="dropdown">
-        <button class="dropbtn">Dropdown</button>
-        <div class="dropdown-content">
-          <a href="#">Link 1</a>
-          <a href="#">Link 2</a>
-          <a href="#">Link 3</a>
+                <span class="by">By Kay Schröder, Rowen Forman, Kenny Jeurissen and Eva Rijvers</span>
+            </header>
         </div>
-      </div> -->
-      <div id="filters-box">
-        <nav>
-          <ul>
-            <li class="submenu"><a href="#" title="Select your filters"><p>FILTER</p></a>
-              <ul class="megamenu" id="filter-menu">
-                <ul id="filter-col01">
-                </ul>
-                <ul id="filter-col02">
-                </ul>
-                <ul id="filter-col03">
-                </ul>
-                <ul id="filter-col04">
-                </ul>
-              </ul>
-            </li>
-          </ul>
-        </nav> 
-      </div>
-    </header>
-    <div class="wrapper" id="main-window">
-      <div id="sidepanel" class="container left">
-      </div>
-      <div class="container right" id="svg-window">
-          <div id="container"></div>
-          <div id="example" style="width: 2048px"></div>
-
-          <div id="info">
-            <strong><a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> 
-            <span class="bull">&bull;</span> Created by the Google Data Arts Team 
-            <span class="bull">&bull;</span> Data acquired from <a href="http://sedac.ciesin.columbia.edu/gpw/">SEDAC</a>
-          </div>
-
-          <div id="currentInfo">
-            <span id="year1990" class="year">1990</span>
-            <span id="year1995" class="year">1995</span>
-            <span id="year2000" class="year">2000</span>
-          </div>
-
-          <div id="title">
-            World Population
-          </div>
-
-          <a id="ce" href="http://www.chromeexperiments.com/globe">
-            <span>This is a Chrome Experiment</span>
-          </a>
-      </div>
     </div>
 
+    <div class="header-img"></div>
 
-  <script type="text/javascript" src="third-party/Detector.js"></script>
-  <script src='//cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js'></script>
-  <script type="text/javascript" src="third-party/Tween.js"></script>
-  <script src="https://d3js.org/d3.v5.js"></script>
-  <script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
-  <script src="https://d3js.org/topojson.v2.min.js"></script>
-  <script src="https://giottojs.org/d3-canvas-transition/0.3.3/d3-canvas-transition.js"></script>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="third-party/crossfilter.js"></script>
-  <script type="text/javascript" src="map.js"></script>
-  <script type="text/javascript" src="globe.js"></script>
-  
-  <script type="text/javascript">
+    <div class="container-wide">
+        <div class="container-small">
+            <p>Terrorism has been a popular news item for over several years, but what the headlines don’t say, is that attacks are actually decreasing since 2014. What caused this? How big is the threat really and are we still at risk?</p>
+            <p>Since 1970, more than 180.000 international and domestic terrorist attacks have taken place. Over the course of time, a pattern in these attacks is noticeable. There are waves of attacks that fluctuate in volume over periods of several decades. What caused this? How big is the threat really and who is at risk?</p>
+            <p>This data visualization uses data from an open-source database (Global Terrorism Database, or GTD), that was created by researchers at the University of Maryland (UMD) and is maintained by the National Consortium for the Study of Terrorism and Responses to Terrorism (START).</p>
+            <p>The GTD defines terrorist attacks as: “acts by non-state actors involving the threatened or actual use of illegal force or violence to attain a political, economic, religious, or social goal through fear, coercion, or intimidation.”
+                </p>
 
-    if(!Detector.webgl){
-      Detector.addGetWebGLMessage();
-    } else {
+            <hr>
+            
+            <div class="title">
+            <h3>Global statistics</h3> <span> // 1970 - 2017</span>
+        </div>
+            <p>In almost 50 years, a pattern in terrorist attacks is noticeable. There are waves of attacks that fluctuate in volume over periods of several decades. In these waves, 3 absolute trends stand out.</p> 
 
-      var years = ['1990','1995','2000'];
-     
-      var container = document.getElementById('container');
-      var globe = new DAT.Globe(container);
-      //.getObjectByName( "objectName", true )
-      
-      var i, tweens = [];
-      
-      var settime = function(globe, t) {
-        return function() {
-          new TWEEN.Tween(globe).to({time: t/years.length},500).easing(TWEEN.Easing.Cubic.EaseOut).start();
-          var y = document.getElementById('year'+years[t]);
-          if (y.getAttribute('class') === 'year active') {
-            return;
-          }
-          var yy = document.getElementsByClassName('year');
-          for(i=0; i<yy.length; i++) {
-            yy[i].setAttribute('class','year');
-          }
-          y.setAttribute('class', 'year active');
-        };
-      };
-      
-      for(var i = 0; i<years.length; i++) {
-        var y = document.getElementById('year'+years[i]);
-        y.addEventListener('mouseover', settime(globe,i), false);
-      }
-      
-      var xhr;
-      TWEEN.start();
-      
-      
-      xhr = new XMLHttpRequest();
-      xhr.open('GET', 'population909500.json', true);
-      xhr.onreadystatechange = function(e) {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            var data = JSON.parse(xhr.responseText);
-            window.data = data;
-            for (i=0;i<data.length;i++) {
-              globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true});
-            }
-            //globe.createPoints();
-            //settime(globe,0)();
-            globe.animate();
-            document.body.style.backgroundImage = 'none'; // remove loading
-          }
-        }
-      };
-      xhr.send(null);
-    }
+        </div>
+        
+            <div class="placeholder-graph"><svg id="Laag_1" data-name="Laag 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 322.9 203.63"><defs><style>.cls-1{font-size:12px;fill:#343434;font-family:Inconsolata-Regular, Inconsolata;}.cls-2{fill:#e83d3a;}</style></defs><title>Naamloos-3</title><text class="cls-1" transform="translate(62.45 9.74)">Total amount of attacks over time</text><text class="cls-1" transform="translate(0 44.89)">200 -</text><text class="cls-1" transform="translate(0 107.72)">100 -</text><text class="cls-1" transform="translate(12 180.65)">0</text><text class="cls-1" transform="translate(32.55 200.33)">1970</text><text class="cls-1" transform="translate(298.9 200.33)">2017</text><rect class="cls-2" x="44.55" y="180.99" width="5.01" height="6.03"/><rect class="cls-2" x="50.11" y="182.66" width="5.01" height="4.36"/><rect class="cls-2" x="55.67" y="181.76" width="5.01" height="5.26"/><rect class="cls-2" x="61.23" y="182.64" width="5.01" height="4.38"/><rect class="cls-2" x="66.79" y="181.64" width="5.01" height="5.38"/><rect class="cls-2" x="72.35" y="180.17" width="5.01" height="6.85"/><rect class="cls-2" x="77.91" y="178.47" width="5.01" height="8.55"/><rect class="cls-2" x="83.47" y="174.8" width="5.01" height="12.22"/><rect class="cls-2" x="89.03" y="172.89" width="5.01" height="14.13"/><rect class="cls-2" x="94.59" y="162.36" width="5.01" height="24.66"/><rect class="cls-2" x="100.15" y="162.36" width="5.01" height="24.66"/><rect class="cls-2" x="105.71" y="163.07" width="5.01" height="23.96"/><rect class="cls-2" x="111.27" y="163.46" width="5.01" height="23.57"/><rect class="cls-2" x="116.83" y="160.44" width="5.01" height="26.59"/><rect class="cls-2" x="122.4" y="154.65" width="5.01" height="32.37"/><rect class="cls-2" x="127.96" y="160.02" width="5.01" height="27"/><rect class="cls-2" x="133.52" y="160.53" width="5.01" height="26.49"/><rect class="cls-2" x="139.08" y="157.54" width="5.01" height="29.48"/><rect class="cls-2" x="144.64" y="152.55" width="5.01" height="34.47"/><rect class="cls-2" x="150.2" y="146.97" width="5.01" height="40.05"/><rect class="cls-2" x="155.76" y="151.01" width="5.01" height="36.01"/><rect class="cls-2" x="161.32" y="143.64" width="5.01" height="43.38"/><rect class="cls-2" x="166.88" y="140.05" width="5.01" height="46.98"/><rect class="cls-2" x="178" y="155.01" width="5.01" height="32.01"/><rect class="cls-2" x="183.56" y="158.48" width="5.01" height="28.54"/><rect class="cls-2" x="189.12" y="158.69" width="5.01" height="28.33"/><rect class="cls-2" x="194.69" y="157.41" width="5.01" height="29.62"/><rect class="cls-2" x="200.25" y="178.37" width="5.01" height="8.65"/><rect class="cls-2" x="205.8" y="174.1" width="5.01" height="12.92"/><rect class="cls-2" x="211.37" y="170.22" width="5.01" height="16.8"/><rect class="cls-2" x="216.93" y="169.37" width="5.01" height="17.66"/><rect class="cls-2" x="222.49" y="174.67" width="5.01" height="12.35"/><rect class="cls-2" x="228.05" y="175.18" width="5.01" height="11.84"/><rect class="cls-2" x="233.61" y="176.22" width="5.01" height="10.8"/><rect class="cls-2" x="239.17" y="168.34" width="5.01" height="18.68"/><rect class="cls-2" x="244.73" y="161.47" width="5.01" height="25.55"/><rect class="cls-2" x="250.29" y="156.99" width="5.01" height="30.03"/><rect class="cls-2" x="255.85" y="142.51" width="5.01" height="44.51"/><rect class="cls-2" x="261.41" y="143.29" width="5.01" height="43.73"/><rect class="cls-2" x="266.97" y="142.32" width="5.01" height="44.7"/><rect class="cls-2" x="272.54" y="140" width="5.01" height="47.02"/><rect class="cls-2" x="278.09" y="108.08" width="5.01" height="78.94"/><rect class="cls-2" x="283.65" y="75.53" width="5.01" height="111.49"/><rect class="cls-2" x="289.22" y="30.45" width="5.01" height="156.58"/><rect class="cls-2" x="294.78" y="48.4" width="5.01" height="138.62"/><rect class="cls-2" x="300.33" y="61.16" width="5.01" height="125.86"/><rect class="cls-2" x="305.9" y="86.05" width="5.01" height="100.97"/></svg></div>
+            
+        <div class="container-small">
 
-    
+                <p>First of all: in the aftermath of the attacks on New York on September 11, 2001, terrorist attacks dramatically increased, as the “War against Terror” was introduced. 
+                        This “war” cooled down from 2008 until 2011. </p>
+                        
+                    <p>And starting in 2011, a second trend stood out: from 2011 through 2014, terror attacks were as high as they ever were in the history of mankind. 
+                        In the absolute peak in 2014, attacks had multiplied by twelve and the amount of victims had multiplied by more than eight (since 2002). </p>
+                        
+                    <p>The third trend, is a downwards trend. Fortunately, terrorism has been consistently decreasing since 2014. The numbers of attacks were down for more than 40% in 2017. </p>
 
-    //console.log(globe.scene.getObjectByName( "objectName", true ));
+        </div>
 
-  </script>
 
-  </body>
 
+
+        <div class="container-small">
+                <hr>
+                <div class="title"><h3>Deadliest attacks</h3></div>
+            <p>10 deadliest attacks.</p>
+            
+        </div>
+            <div class="placeholder-graph">top 10 -- barchart</div>
+
+
+
+
+
+            <div class="container-small">
+                    <hr>
+                    <div class="title"><h3>Post 9 / 11: War on Terror</h3> <span> // 2002 - 2007</span>
+                <h4>Global terrorism following the years after the 9 / 11 attacks</h4></div>
+                <p>After the attacks on New York on September 11, 2001 (and Madrid in 2004 and London in 2005) the European Union and the North Atlantic Treaty Organization (NATO) made battling terrorism a global priority. With almost 3000 fatalities, 9/11 was the deadliest terrorist attack in human history so far. The aftermath of the attack marked a turning point in history and the beginning of the “War on Terror”. Counter terrorism safety measures were taken. Such as the founding of Homeland Security, the adopting of the Patriot Act, the Terrorist Information Awareness program and the invasion of Afghanistan and Iraq in 2001 and 2003.</p>
+                
+            </div>
+                <div class="placeholder-graph">Slopegraph pre vs post 9 / 11 countries w/ most attacks (%)</div>
+
+            <div class="container-small">
+
+                
+                   
+            <p>Higher populated Muslim countries had suffered less from terrorism then before the 9/11 attacks in 2001. From 1970 to august 2001 the 5 most attacked countries were Colombia, Peru, El Salvador, Northern Ireland and India. Whereas after September 2001 until 2008 the most terrorism affected countries were Iraq, India, Afghanistan, Pakistan and Thailand.</p>
+            
+
+            </div>
+
+            
+
+            <div class="container-small">
+                    <hr>
+                    <div class="title"><h3>Terrorism peaks</h3> <span> // 2011 - 2014</span>
+                <h4>The war in Syria and the bloody rise of the Islamic State</h4></div>
+                <p>From 2011 to 2014 terrorist attacks skyrocketed. Where there were 8246 (approx. 8000) fatalities during 5076 (5000) attacks in 2002, there were 44,490 (44,000) fatalities during 16,903 (16,000) attacks in 2014. In 2014’s peak five countries accounted for more than half of the world’s terrorist attacks (Pakistan, Iraq, Ukraine, Afghanistan and Somalia). In this period of time, terrorism increased by more than 350%. This correlates with the aftermath of the Arab Spring, the rise of ISIL, the start of the Syrian war and the re-appearance of Boko Haram in Nigeria.</p>
+            </div>
+                <div class="placeholder-graph">Small multiples bar chart of attacks in Pakistan, Iraq, Ukraine, Afgh, Syria</div>
+            
+            
+            <div class="container-small">
+                        <hr>
+                        <div class="title"><h3>A downward trend</h3> <span> // 2011 - 2014</span>
+                    <h4>The war in Syria and the bloody rise of the Islamic State</h4></div>
+                    <p>From 2011 to 2014 terrorist attacks skyrocketed. Where there were 8246 (approx. 8000) fatalities during 5076 (5000) attacks in 2002, there were 44,490 (44,000) fatalities during 16,903 (16,000) attacks in 2014. In 2014’s peak five countries accounted for more than half of the world’s terrorist attacks (Pakistan, Iraq, Ukraine, Afghanistan and Somalia). In this period of time, terrorism increased by more than 350%. This correlates with the aftermath of the Arab Spring, the rise of ISIL, the start of the Syrian war and the re-appearance of Boko Haram in Nigeria.</p>
+                            <p>There are several events that influenced this fluctuation in global terrorism the last couple of years. One of the main reasons for this downward trend is the collapse of Isis’s footprint in Iraq and Syria, They suffered formidable losses, as well of virtual space in both these countries. Deaths from terrorism in Iraq have fallen by almost 60% compared to a year earlier. Not just Iraq and Syria caused this massive increase, but it’s also a result from tensions in Nigeria and the outbreak of the Arab Spring.</p>
+                <p>Despite its reduced capacity, ISIL remained the deadliest terrorist group globally in 2017. Even though their caused death rate was reduced 52 percent compared to 2016. </p>
+
+                        <p>   In 2017, Western Europe accounted for less than 3 percent of worldwide attacks and the United States for less than 1 percent of attacks.
+                        </p>
+                        </div>
+            
+            
+            </div>
+            <a class="btn-explore" href="globe.html"> <p>  Explore full visualization </p> </a>
+        </div>
+    </div>
+            
+    </div>
+</body>
 </html>

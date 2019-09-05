@@ -16,9 +16,6 @@ var DAT = DAT || {};
 
 DAT.Globe = function(container, opts) {
   opts = opts || {};
-
-  var svgWidth = document.getElementById('main-window');
-  var offsetLeft = document.getElementById('sidepanel');
   
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
@@ -93,7 +90,7 @@ DAT.Globe = function(container, opts) {
 
   var setSize = function() {
     w = svgWidth.offsetWidth - offsetLeft.offsetWidth || window.innerWidth;
-    h = svgWidth.offsetHeight - offsetLeft.offsetHeight || window.innerHeight;
+    h = svgWidth.offsetHeight - offsetTop.offsetHeight || window.innerHeight;
   }
 
   function init() {
@@ -103,15 +100,12 @@ DAT.Globe = function(container, opts) {
 
     var shader, uniforms, material;
     w = svgWidth.offsetWidth - offsetLeft.offsetWidth || window.innerWidth;
-    h = svgWidth.offsetHeight - offsetLeft.offsetHeight || window.innerHeight;
+    h = svgWidth.offsetHeight - offsetTop.offsetHeight || window.innerHeight;
 
     camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
     camera.position.z = distance;
 
-    scene = new THREE.Scene();
-
-    // scene.add(new THREE.AmbientLight(0x656565));
-    // scene.add(light);    
+    scene = new THREE.Scene(); 
 
     var geometry = new THREE.SphereGeometry(200, 40, 30);
 
@@ -119,15 +113,12 @@ DAT.Globe = function(container, opts) {
 
     shader = Shaders['earth'];
     uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-
-    //var texture = new THREE.Texture(getCanvasTexture());
     
 
     var imageTex = THREE.ImageUtils.loadTexture('world.jpg');
 
     console.log(imageTex);
 
-    //uniforms['texture'].value = 
     uniforms['texture'].value = imageTex;
 
     material = new THREE.ShaderMaterial({
@@ -277,8 +268,6 @@ DAT.Globe = function(container, opts) {
     const ctx = document.getElementById('texture-canvas').getContext('2d')
     const texture = new THREE.CanvasTexture(ctx.canvas);
     console.log(ctx);
-    //console.log(scene.getObjectByName( "globeObject" ));
-    //console.log(DAT.Globe.mesh);
     
 
     shader = Shaders['earth'];
@@ -370,57 +359,13 @@ DAT.Globe = function(container, opts) {
     container.removeEventListener('mouseout', onMouseOut, false);
   }
 
-  // var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "MouseWheel" //FF doesn't recognize mousewheel as of FF3.x
-  // console.log(mousewheelevt);
-  // console.log(document.addEventListener);
 
-  // if(mousewheelevt == "MouseWheel") {
-  //   document.attachEvent("on"+mousewheelevt, function(e){
-  //     e.preventDefault();
-  //     console.log(e);
-  //     var wheelInput = e.wheelDeltaY * 0.3;
-  //     if (overRenderer) {
-  //         wheelInput = e.detail * 0.3 * 120;
-  //       }
-  //       console.log("delta:", e.wheelDeltaY);
-  //       zoom(wheelInput);}
-  //       return false;}, false)
-  // }
 
-  // if (document.attachEvent) //if IE (and Opera depending on user setting)
-  //     document.attachEvent("on"+mousewheelevt, function(e){e.preventDefault();
-  //       console.log(e);
-  //       var wheelInput = e.wheelDeltaY * 0.3;
-  //       if (overRenderer) {
-  //         if(!mousewheelevt == "MouseWheel") {
-  //           console.log("check");
-  //           wheelInput = e.detail * 0.3 * 120;
-  //         }
-  //         console.log("delta:", e.wheelDeltaY);
-  //         zoom(wheelInput);}
-  //         return false;}, false)
-  // else if (document.addEventListener) //WC3 browsers
-  // console.log("thischeck");
-  //     document.addEventListener(mousewheelevt, function(e){e.preventDefault();
-  //       var wheelInput = e.wheelDeltaY * 0.3;
-  //       console.log("input: ", wheelInput);
-  //       if (overRenderer) {
-  //         if(!mousewheelevt == "MouseWheel") {
-  //           console.log("check");
-  //           wheelInput = e.detail * 0.3 * 120;
-  //         }
-  //         zoom(wheelInput);
-  //       }
-  //       return false;}, false)
-
-  // function onMouseWheel(event) {
-  //   event.preventDefault();
-  //   if (overRenderer) {
-
-  //     zoom(event.wheelDeltaY * 0.3);
-  //   }
-  //   return false;
-  // }
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  //                                                                                        //
+  //                      Cross browser mousewheel handling and zoom                                                                                   //
+  //                                                                                        //
+  ////////////////////////////////////////////////////////////////////////////////////////////
 
   var passiveSupported = false;
 
@@ -448,7 +393,7 @@ DAT.Globe = function(container, opts) {
       ? { passive: false } : false);
       
   else if (document.addEventListener) //WC3 browsers
-    console.log("WC3 called")
+    //console.log("WC3 called")
       document.addEventListener(mousewheelevt, function(e) {
         zoomHandler(e);
       }, passiveSupported
@@ -456,16 +401,16 @@ DAT.Globe = function(container, opts) {
 
   function zoomHandler(mouseEvent) {
       var wheelInput;
-      console.log(mousewheelevt);
+      //console.log(mousewheelevt);
       if(mousewheelevt == "DOMMouseScroll") {
-        console.log("DOMMouseScroll true"); 
+        //console.log("DOMMouseScroll true"); 
         wheelInput = -mouseEvent.detail * 0.3 * 120;
       } else if(mousewheelevt == "mousewheel") {
-        console.log("MouseWheel true");
+        //console.log("MouseWheel true");
         wheelInput = mouseEvent.wheelDeltaY * 0.3;
       }
       if (overRenderer) {
-        console.log("overRenderer");
+        //console.log("overRenderer");
         mouseEvent.preventDefault();
         zoom(wheelInput);   
       }    
@@ -486,11 +431,18 @@ DAT.Globe = function(container, opts) {
     }
   }
 
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  //                                                                                        //
+  //                      Automatic globe panning functionality                                                                                  //
+  //                                                                                        //
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
   // Calculates x, y coordinates based on
   // lat/lon coordinates.
   var calculate2dPosition = function(coords) {
 
-    console.log(coords.lon, coords.lat);
     var PI = Math.PI;
     var phi = (90 + +coords.lon) * PI / 180;
     var theta = (+coords.lat) * PI / 180;
@@ -508,6 +460,11 @@ DAT.Globe = function(container, opts) {
     target = calculate2dPosition(pos);
     return this;
   }
+
+
+
+
+
 
   function onWindowResize( event ) {
     setSize();

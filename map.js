@@ -1,5 +1,5 @@
 var example = d3.select("body").append("div")
-    .style("display", "hidden")
+    .style("display", "none")
     .style("width", "2048px")
     .style('display', 'hidden');
 
@@ -20,6 +20,9 @@ var paper;
 d3.json("data/world50m.json")
     .then(function(world110) {
         console.log("world data loaded");
+
+        svgWidth.style.height = svgWidth.innerHeight - offsetTop.innerHeight + "px";
+        console.log(svgWidth.innerHeight - offsetTop.innerHeight + "px");
         
         world = world110;
         countries = topojson.feature(world, world.objects.countries).features;
@@ -36,12 +39,31 @@ d3.csv("/data/globalterrorismdb_0718dist-csv.csv")
         console.log("dataset loaded");
         data = dataset;
 
-        var countPerYear = [];
+        var countPerYear = {};
+
+        // console.log(+data[data.length-1].iyear);
+
+        // for(i = +data[0].iyear; i <= +data[data.length-1].iyear; i++) {
+        //     countPerYear[i] = 0;
+        //     console.log(i);
+        // }
 
         // for(i = 0; i < data.length; i++) {
         //     var key = +data[i].iyear;
-        //     var dataEntry = {}
+        //     //console.log(key);
+        //     //countPerYear.key += data[i].nkills;
+        //     countPerYear[key]++;
         // }
+
+        // console.log(countPerYear);
+
+        d3.json("/data/attacks_per_year.json")
+            .then(function(attacksPeryear) {
+                console.log(attacksPeryear);
+            }).catch(function(error) {
+                throw error;
+        })
+
 
         cf = crossfilter(data);                
         drawCircles(data);
