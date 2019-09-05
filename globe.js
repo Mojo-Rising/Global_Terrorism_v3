@@ -174,7 +174,7 @@ DAT.Globe = function(container, opts) {
 
     container.addEventListener('mousedown', onMouseDown, false);
 
-    container.addEventListener('mousewheel', onMouseWheel, false);
+    //container.addEventListener('mousewheel', onMouseWheel, false);
 
     document.addEventListener('keydown', onDocumentKeyDown, false);
 
@@ -367,13 +367,90 @@ DAT.Globe = function(container, opts) {
     container.removeEventListener('mouseout', onMouseOut, false);
   }
 
-  function onMouseWheel(event) {
-    event.preventDefault();
-    if (overRenderer) {
-      zoom(event.wheelDeltaY * 0.3);
-    }
-    return false;
+  // var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "MouseWheel" //FF doesn't recognize mousewheel as of FF3.x
+  // console.log(mousewheelevt);
+  // console.log(document.addEventListener);
+
+  // if(mousewheelevt == "MouseWheel") {
+  //   document.attachEvent("on"+mousewheelevt, function(e){
+  //     e.preventDefault();
+  //     console.log(e);
+  //     var wheelInput = e.wheelDeltaY * 0.3;
+  //     if (overRenderer) {
+  //         wheelInput = e.detail * 0.3 * 120;
+  //       }
+  //       console.log("delta:", e.wheelDeltaY);
+  //       zoom(wheelInput);}
+  //       return false;}, false)
+  // }
+
+  // if (document.attachEvent) //if IE (and Opera depending on user setting)
+  //     document.attachEvent("on"+mousewheelevt, function(e){e.preventDefault();
+  //       console.log(e);
+  //       var wheelInput = e.wheelDeltaY * 0.3;
+  //       if (overRenderer) {
+  //         if(!mousewheelevt == "MouseWheel") {
+  //           console.log("check");
+  //           wheelInput = e.detail * 0.3 * 120;
+  //         }
+  //         console.log("delta:", e.wheelDeltaY);
+  //         zoom(wheelInput);}
+  //         return false;}, false)
+  // else if (document.addEventListener) //WC3 browsers
+  // console.log("thischeck");
+  //     document.addEventListener(mousewheelevt, function(e){e.preventDefault();
+  //       var wheelInput = e.wheelDeltaY * 0.3;
+  //       console.log("input: ", wheelInput);
+  //       if (overRenderer) {
+  //         if(!mousewheelevt == "MouseWheel") {
+  //           console.log("check");
+  //           wheelInput = e.detail * 0.3 * 120;
+  //         }
+  //         zoom(wheelInput);
+  //       }
+  //       return false;}, false)
+
+  // function onMouseWheel(event) {
+  //   console.log(e.detail);
+  //   event.preventDefault();
+  //   if (overRenderer) {
+  //     //console.log(event.wheelDeltaY);
+  //     zoom(event.detail * 0.3 * 120);
+  //   }
+  //   return false;
+  // }
+
+  var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" //FF doesn't recognize mousewheel as of FF3.x
+ 
+  
+  if (document.attachEvent) //if IE (and Opera depending on use setting)
+      document.attachEvent("on"+mousewheelevt, function(e){ 
+        zoomHandler(e);
+      }, false)
+      
+  else if (document.addEventListener) //WC3 browsers
+    console.log("WC3 called")
+      document.addEventListener(mousewheelevt, function(e) {
+        zoomHandler(e);
+      }, false)
+
+  function zoomHandler(mouseEvent) {
+      var wheelInput;
+      console.log(mousewheelevt);
+      if(mousewheelevt == "DOMMouseScroll") {
+        console.log("DOMMouseScroll true"); 
+        wheelInput = mouseEvent.detail * 0.3 * 120;
+      } else if(mousewheelevt == "mousewheel") {
+        console.log("MouseWheel true");
+        wheelInput = mouseEvent.wheelDeltaY * 0.3;
+      }
+      if (overRenderer) {
+        mouseEvent.preventDefault();
+        zoom(wheelInput);   
+      }    
   }
+
+
 
   function onDocumentKeyDown(event) {
     switch (event.keyCode) {
@@ -388,15 +465,39 @@ DAT.Globe = function(container, opts) {
     }
   }
 
+  // Calculates x, y coordinates based on
+  // lat/lon coordinates.
+  var calculate2dPosition = function(coords) {
+
+    console.log(coords.lon, coords.lat);
+    var PI = Math.PI;
+    var phi = (90 + +coords.lon) * PI / 180;
+    var theta = (+coords.lat) * PI / 180;
+
+    return {
+      x: phi,
+      y: PI - theta
+    }
+  }
+
+  var center = function(datapoint) {
+    console.log(datapoint);
+    pos = { lat: datapoint.latitude, lon: datapoint.longitude };
+    console.log(pos);
+    target = calculate2dPosition(pos);
+    return this;
+  }
+
   function onWindowResize( event ) {
     
-    camera.aspect = container.offsetWidth / container.offsetHeight;
+    camera.aspect = container.offsetWidth / 800;
     camera.updateProjectionMatrix();
     console.log(container.offsetHeight);
-    renderer.setSize( container.offsetWidth, container.offsetHeight );
+    renderer.setSize( container.offsetWidth, 800 );
   }
 
   function zoom(delta) {
+    console.log("calling zoom");
     distanceTarget -= delta;
     distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
     distanceTarget = distanceTarget < 350 ? 350 : distanceTarget;
@@ -408,6 +509,7 @@ DAT.Globe = function(container, opts) {
   }
 
   function render() {
+    
     zoom(curZoomSpeed);
 
     rotation.x += (target.x - rotation.x) * 0.1;
@@ -460,6 +562,8 @@ DAT.Globe = function(container, opts) {
   this.renderer = renderer;
   this.scene = scene;
   this.getTexture = getTexture;
+  this.get2DPosition = calculate2dPosition;
+  this.center = center;
 
   return this;
 

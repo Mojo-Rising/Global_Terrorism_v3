@@ -14,7 +14,7 @@ var projection = d3.geoEquirectangular().scale(height / Math.PI)
 
 var data = [];
 var countries;
-
+var deviceResolution = window.devicePixelRatio;
 var paper;
 
 d3.json("data/world50m.json")
@@ -41,7 +41,11 @@ d3.csv("/data/globalterrorismdb_0718dist-csv.csv")
         drawCircles(data);
         //getTexture();
         globe.getTexture();
-        filterByVar("country_txt");            
+        filterByVar("country_txt");
+        filterByVar("attacktype1_txt");
+
+        //console.log(globe.get2DPosition({ lon: data[0].longitude, lat: data[0].latitude }));
+        globe.center( data[4] );
         
         
     }).catch(function(error) {
@@ -108,6 +112,20 @@ var customBase = document.createElement("custom");
 
 var custom = d3.select(customBase);
 
+// let drawCirclesPromise = new Promise((resolve, reject) => {
+//     const ctx = document.getElementById('texture-canvas').getContext('2d');
+//     ctx.save();
+
+//     for (let i = 0; i < data.length; i++) {      
+//         var coords = projection([data[i].longitude, data[i].latitude]);
+//         if(i % 100 == 0) console.log("drawing 100th circle");
+//         ctx.fillStyle = "#FF0000";
+//         ctx.fillRect(coords[0]*1.5, coords[1]*1.5, 5, 5);
+//     }
+
+
+// })
+
 function databind(data) {
     console.log(data);
     console.log("databind function called");
@@ -138,6 +156,7 @@ function databind(data) {
 }
 
 function drawCircles(data) {
+    console.log(data);
     console.log("drawCircles funtion called");
     const ctx = document.getElementById('texture-canvas').getContext('2d');
     ctx.save();
@@ -152,9 +171,11 @@ function drawCircles(data) {
     // }
 
     for (let i = 0; i < data.length; i++) {
+        
         var coords = projection([data[i].longitude, data[i].latitude]);
+        if(i % 100 == 0) console.log("drawing 100th circle");
         ctx.fillStyle = "#FF0000";
-        ctx.fillRect(coords[0]*1.5, coords[1]*1.5, 5, 5);
+        ctx.fillRect(coords[0]*deviceResolution, coords[1]*deviceResolution, 5, 5);
       }
 
 
@@ -173,7 +194,7 @@ function drawCircles(data) {
             
     // });
 
-    ctx.restore();
+    //ctx.restore();
 
     console.log("drawCircles function finished");
 
@@ -214,7 +235,7 @@ function filterByVar(varName) {
     group.forEach(function(d, i) {
       buttonContainer.append("a")
         .attr("href", "#")
-        .attr("id", d.key.replace(/\s/g, ''))
+        .attr("id", d.key.replace(/["'()\s/]/g,""))
         .on("click", function() {
           getFilterResult(dimension, d.key, arr);
         })
@@ -228,7 +249,7 @@ function filterByVar(varName) {
     console.log("getFilterResult function called");
     console.log(key);
 
-    var element = d3.select("#" + key.replace(/\s/g, ''));
+    var element = d3.select("#" + key.replace(/["'()\s/]/g,""));
     if(!element.classed("active")) {
         element.classed("active", true);
         console.log("found unactive element");
@@ -267,9 +288,9 @@ function filterByVar(varName) {
 
     //databind(dimension.top(Infinity));
     draw("canvas");
-    drawCircles(dimension.top(Infinity));
+    setTimeout(function() { drawCircles(dimension.top(Infinity)); }, 10);
     console.log("getFilterResult function finished");
-    setTimeout(function(){ globe.getTexture(); }, 1);
+    setTimeout(function(){ globe.getTexture(); }, 20);
     
     
   }
