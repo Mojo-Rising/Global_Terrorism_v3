@@ -16,6 +16,8 @@ var DAT = DAT || {};
 
 DAT.Globe = function(container, opts) {
   opts = opts || {};
+
+  var svgWidth = document.getElementById('main-window');
   
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
@@ -411,40 +413,58 @@ DAT.Globe = function(container, opts) {
   //       return false;}, false)
 
   // function onMouseWheel(event) {
-  //   console.log(e.detail);
   //   event.preventDefault();
   //   if (overRenderer) {
-  //     //console.log(event.wheelDeltaY);
-  //     zoom(event.detail * 0.3 * 120);
+
+  //     zoom(event.wheelDeltaY * 0.3);
   //   }
   //   return false;
   // }
 
+  var passiveSupported = false;
+
+  try {
+    var options = {
+      get passive() { // This function will be called when the browser
+                      //   attempts to access the passive property.
+        passiveSupported = true;
+      }
+    };
+
+    window.addEventListener("test", options, options);
+    window.removeEventListener("test", options, options);
+  } catch(err) {
+    passiveSupported = false;
+  }
+
   var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" //FF doesn't recognize mousewheel as of FF3.x
  
   
-  if (document.attachEvent) //if IE (and Opera depending on use setting)
+  if (document.attachEvent) //if IE (and Opera depending on use setting) 
       document.attachEvent("on"+mousewheelevt, function(e){ 
         zoomHandler(e);
-      }, false)
+      }, passiveSupported
+      ? { passive: false } : false);
       
   else if (document.addEventListener) //WC3 browsers
     console.log("WC3 called")
       document.addEventListener(mousewheelevt, function(e) {
         zoomHandler(e);
-      }, false)
+      }, passiveSupported
+      ? { passive: false } : false);
 
   function zoomHandler(mouseEvent) {
       var wheelInput;
       console.log(mousewheelevt);
       if(mousewheelevt == "DOMMouseScroll") {
         console.log("DOMMouseScroll true"); 
-        wheelInput = mouseEvent.detail * 0.3 * 120;
+        wheelInput = -mouseEvent.detail * 0.3 * 120;
       } else if(mousewheelevt == "mousewheel") {
         console.log("MouseWheel true");
         wheelInput = mouseEvent.wheelDeltaY * 0.3;
       }
       if (overRenderer) {
+        console.log("overRenderer");
         mouseEvent.preventDefault();
         zoom(wheelInput);   
       }    
@@ -490,10 +510,12 @@ DAT.Globe = function(container, opts) {
 
   function onWindowResize( event ) {
     
-    camera.aspect = container.offsetWidth / 800;
+    camera.aspect = svgWidth.offsetWidth / 800;
+    // camera.aspect = container.offsetWidth / 800;
     camera.updateProjectionMatrix();
     console.log(container.offsetHeight);
-    renderer.setSize( container.offsetWidth, 800 );
+    renderer.setSize( svgWidth.offsetWidth, 800 );
+    //renderer.setSize( container.offsetWidth, 800 );
   }
 
   function zoom(delta) {
