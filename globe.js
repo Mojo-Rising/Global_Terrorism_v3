@@ -18,6 +18,7 @@ DAT.Globe = function(container, opts) {
   opts = opts || {};
 
   var svgWidth = document.getElementById('main-window');
+  var offsetLeft = document.getElementById('sidepanel');
   
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
@@ -91,8 +92,8 @@ DAT.Globe = function(container, opts) {
   var PI_HALF = Math.PI / 2;
 
   var setSize = function() {
-    w = container.offsetWidth || window.innerWidth;
-    h = container.offsetHeight || window.innerHeight;
+    w = svgWidth.offsetWidth - offsetLeft.offsetWidth || window.innerWidth;
+    h = svgWidth.offsetHeight - offsetLeft.offsetHeight || window.innerHeight;
   }
 
   function init() {
@@ -101,8 +102,8 @@ DAT.Globe = function(container, opts) {
     container.style.font = '13px/20px Arial, sans-serif';
 
     var shader, uniforms, material;
-    w = container.offsetWidth || window.innerWidth;
-    h = container.offsetHeight || window.innerHeight;
+    w = svgWidth.offsetWidth - offsetLeft.offsetWidth || window.innerWidth;
+    h = svgWidth.offsetHeight - offsetLeft.offsetHeight || window.innerHeight;
 
     camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
     camera.position.z = distance;
@@ -509,12 +510,15 @@ DAT.Globe = function(container, opts) {
   }
 
   function onWindowResize( event ) {
-    
-    camera.aspect = svgWidth.offsetWidth / 800;
-    // camera.aspect = container.offsetWidth / 800;
+    setSize();
+    camera.aspect = w / h;
+    // camera.aspect = (svgWidth.offsetWidth - offsetLeft.offsetWidth) / 800;
     camera.updateProjectionMatrix();
-    console.log(container.offsetHeight);
-    renderer.setSize( svgWidth.offsetWidth, 800 );
+    renderer.setSize(w, h);
+    // camera.aspect = container.offsetWidth / 800;
+    // camera.updateProjectionMatrix();
+    // console.log(svgWidth.offsetWidth / offsetLeft.offsetWidth, svgWidth.offsetHeight);
+    // renderer.setSize(w, h);
     //renderer.setSize( container.offsetWidth, 800 );
   }
 

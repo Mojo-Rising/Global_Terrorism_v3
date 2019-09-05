@@ -36,15 +36,19 @@ d3.csv("/data/globalterrorismdb_0718dist-csv.csv")
         console.log("dataset loaded");
         data = dataset;
 
-        cf = crossfilter(data);
-        //databind(data);                   
+        var countPerYear = [];
+
+        // for(i = 0; i < data.length; i++) {
+        //     var key = +data[i].iyear;
+        //     var dataEntry = {}
+        // }
+
+        cf = crossfilter(data);                
         drawCircles(data);
-        //getTexture();
         globe.getTexture();
         filterByVar("country_txt");
         filterByVar("attacktype1_txt");
 
-        //console.log(globe.get2DPosition({ lon: data[0].longitude, lat: data[0].latitude }));
         globe.center( data[4] );
         
         
@@ -160,45 +164,16 @@ function drawCircles(data) {
     console.log("drawCircles funtion called");
     const ctx = document.getElementById('texture-canvas').getContext('2d');
     ctx.save();
-    //ctx.clearRect(0, 0, width, height);
-    // for(i = 0; i < data.length; i++) {
-    //     var coords = projection([data[i].longitude, data[i].latitude]);
-    //     paper.insert("circle")
-    //         .attr("cx", coords[0])
-    //         .attr("cy", coords[1])
-    //         .attr("r", 5)
-    //         .style("fill", "blue");
-    // }
 
     for (let i = 0; i < data.length; i++) {
         
         var coords = projection([data[i].longitude, data[i].latitude]);
-        if(i % 100 == 0) console.log("drawing 100th circle");
         ctx.fillStyle = "#FF0000";
         ctx.fillRect(coords[0]*deviceResolution, coords[1]*deviceResolution, 5, 5);
-      }
+    }
 
-
-    // console.log("drawCircles function called");
-    // var elements = custom.selectAll('custom.circle');
-    // console.log(elements);
-    // elements.each(function(d,i) {
-    //     var node = d3.select(this);
-    //     var coords = projection([node.attr("long"), node.attr("lat")]);
-    //     paper.insert("circle", ".geoCircle")
-    //         .attr("class", "attackCircle")
-    //         .attr("cx", coords[0])
-    //         .attr("cy", coords[1])
-    //         .attr("r", node.attr("r"))
-    //         .style("fill", node.attr("fillStyle"));
-            
-    // });
-
-    //ctx.restore();
 
     console.log("drawCircles function finished");
-
-    // result = paper;
 }
 
 function filterByVar(varName) {
