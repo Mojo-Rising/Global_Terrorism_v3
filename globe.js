@@ -89,6 +89,9 @@ DAT.Globe = function(container, opts) {
   var PI_HALF = Math.PI / 2;
 
   var setSize = function() {
+
+    //console.log("svgHeight -> " + svgWidth.offsetHeight);
+
     w = svgWidth.offsetWidth - offsetLeft.offsetWidth || window.innerWidth;
     h = svgWidth.offsetHeight - offsetTop.offsetHeight || window.innerHeight;
   }
