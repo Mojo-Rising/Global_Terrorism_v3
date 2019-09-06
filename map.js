@@ -188,10 +188,30 @@ function drawCircles(data) {
     ctx.save();
 
     for (let i = 0; i < data.length; i++) {
-        
+
+        var colour = "#FFF";
+        if(data[i].nkill > 0) {
+            colour = "#ED1C24";
+        } else if (data[i].nwound > 0){
+            colour = "#f7931E";
+        }
+
         var coords = projection([data[i].longitude, data[i].latitude]);
-        ctx.fillStyle = "#FF0000";
-        ctx.fillRect(coords[0]*deviceResolution, coords[1]*deviceResolution, 5, 5);
+
+        var radius = 5;
+
+        ctx.beginPath();
+        //ctx.arc((coords[0]*deviceResolution) - (radius / 2), (coords[1]*deviceResolution) - (radius / 2), radius, 0, 2 * Math.PI, false);
+        ctx.arc((coords[0]*deviceResolution), (coords[1]*deviceResolution), radius, 0, 2 * Math.PI, false);
+        ctx.fillStyle = colour;
+        ctx.fill();
+        //ctx.lineWidth = 5;
+        //ctx.strokeStyle = '#003300';
+        //ctx.stroke();
+        
+        
+        //ctx.fillStyle = colour;
+        //ctx.fillRect(coords[0]*deviceResolution, coords[1]*deviceResolution, 5, 5);
     }
 
 
