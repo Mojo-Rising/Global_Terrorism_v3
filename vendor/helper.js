@@ -156,7 +156,7 @@ function createBrushContainer(data, element) {
     
     if(debug){
         data = BrushEvents;
-        console.log("---> "+tmp_BrushEvents);
+        //console.log("---> "+tmp_BrushEvents);
     }
     
     ////////////////////////////////////////////////////////////////////////
@@ -218,9 +218,30 @@ function _CreateBrushContainer(data){
                     .on("touchend.zoom", null);
     
     
-    CreateBrush(data);
+    
+
+    
+    d3.json("/data/attacks_1970-2017.json")
+            .then(function(attacksPeryear) {
+
+              // newData = [];
+
+              // for(let property in attacksPeryear) {
+              //   var datapoint = { year : property, amount : attacksPeryear[property] };
+              //   newData.push(datapoint);
+              // }
+
+              // console.log(newData);
+              BrushEvents = attacksPeryear;
+              CreateBrush(attacksPeryear);
+              
+            }).catch(function(error) {
+                throw error;
+        })
     
 }
+
+
 
 function CreateBrush(data){
     
@@ -229,6 +250,8 @@ function CreateBrush(data){
     
     h_range =       d3.extent(data, d => d.year);
     v_range = [0,   d3.max(data, d => d.amount)]
+
+    console.log("h_range "+h_range);
     topcalc = brushSize.height-margin.top;
     
     y = d3.scaleLinear().range([0, brushSize.height-10])
@@ -258,6 +281,8 @@ function CreateBrush(data){
             .call(xaxis);
       ////////////////////////////////////////////////////////////////////////
     // Brush Mini Bars -> Data Binding
+
+
     
     // Data Join
     var brushbars = context.selectAll(".brushbars")
@@ -443,6 +468,7 @@ function activateBrush(){
         _activateBrush = false;
     }
 }
+
 
 
 

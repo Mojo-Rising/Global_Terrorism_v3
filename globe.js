@@ -442,9 +442,31 @@ DAT.Globe = function(container, opts) {
   //                                                                                        //
   ////////////////////////////////////////////////////////////////////////////////////////////
 
+
+  var reverse2DPosition = function(pos) {
+    var PI = Math.PI;
+
+    return {
+      lon : ((pos.x / PI) * 180) - 90,
+      lat : (((pos.y - PI) * -1) / PI) * 180
+    }
+  }
+
+
   // Calculates x, y coordinates based on
   // lat/lon coordinates.
   var calculate2dPosition = function(coords) {
+    
+    // lat = 90, lon = 0
+    // phi = (90 + 0) * PI / 180 = PI / 2
+    // theta = 90 * PI / 180 = PI / 2
+
+    // return x: phi = PI / 2, y: PI - theta = PI / 2
+
+    // North pole = PI / 2, 1.5PI
+    // South pole = PI / 2, PI / 2
+
+
 
     var PI = Math.PI;
     var phi = (90 + +coords.lon) * PI / 180;
@@ -549,7 +571,9 @@ DAT.Globe = function(container, opts) {
   this.scene = scene;
   this.getTexture = getTexture;
   this.get2DPosition = calculate2dPosition;
+  this.reverse2DPosition = reverse2DPosition;
   this.center = center;
+  this.rotationVector = rotation;
 
   return this;
 
