@@ -237,17 +237,24 @@ function filterByVar(varName) {
   }
 
   function createDropdownFromFilter(dimension, group, name, arr) {
-    console.log("createDropDown function called");
     var dropdown = d3.select("#filters-box").append("div")
-      .attr("class", "dropdown")
-      .attr("id", name + "-container");
+    .attr("class", "dropdown")
+    .attr("id", name + "-container");
 
-    dropdown.append("button")
-        .html(name)
-        .attr("class", "dropbtn");
+    LabelText = name.replace('_txt','')
+    
+  dropdown.append("button")
+      .html(LabelText)
+      .attr("id", "_"+LabelText)
+      .attr("class", "dropbtn");
+    
+  var ScrollContainer = dropdown.append("div") 
+    .attr("class", "dropdown-content nano");
+    
+  var buttonContainer = ScrollContainer.append("div") 
+    .attr("class", "nano-content");
+    
 
-    var buttonContainer = dropdown.append("div")
-      .attr("class", "dropdown-content");
       
     group.forEach(function(d, i) {
       buttonContainer.append("a")

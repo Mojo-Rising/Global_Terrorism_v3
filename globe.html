@@ -102,6 +102,16 @@
     </style>
     <link rel="stylesheet" href="css/reset.css" type="text/css"/>
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
+
+    <script src="vendor/helper.js"></script>
+    <link rel="stylesheet" href="css/helper.css" type="text/css"/>
+    
+    <script src="vendor/jquery-3.4.1.min.js"></script>
+    <script src="vendor/jquery.nanoscroller.js"></script>
+    <link rel="stylesheet" href="css/nanoscroller.css">
+    
+    <link rel="stylesheet" href="css/icofont.min.css">
+
   </head>
   <body>
 
@@ -222,6 +232,7 @@
             //settime(globe,0)();
             globe.animate();
             document.body.style.backgroundImage = 'none'; // remove loading
+            createBrushContainer(tmp_BrushEvents, "iyear");
           }
         }
       };
