@@ -467,7 +467,6 @@ DAT.Globe = function(container, opts) {
     // South pole = PI / 2, PI / 2
 
 
-
     var PI = Math.PI;
     var phi = (90 + +coords.lon) * PI / 180;
     var theta = (+coords.lat) * PI / 180;

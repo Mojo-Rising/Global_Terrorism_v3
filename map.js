@@ -57,6 +57,29 @@ d3.csv("/data/globalterrorismdb_0718dist-csv.csv")
 
         // console.log(countPerYear);
 
+        var latRange = d3.extent(data, function(d) {
+            return +d.latitude;
+        });
+
+        var lonRange = d3.extent(data, function(d) {
+            return +d.longitude;
+        });
+
+        console.log("latRange-min: " + latRange[0] + ", latRange-max: " + latRange[1] + ", lonRange-min: " + lonRange[0] + ", lonRange-max: " + lonRange[1]);
+
+        var dataByLonLat = {};
+
+        // for(i = Math.floor(lonRange[0]); i <= Math.floor(lonRange[1]); i++) {
+        //     // var lonKey = i;
+        //     // dataByLonLat[lonKey] =[];
+        //     for(j = Math.floor(latRange[0]); j <= Math.floor(latRange[1]); j++) {
+        //         // var latKey = j;
+        //         // dataByLonLat[lonKey][latKey] = [];
+        //     }
+        // }
+
+        console.log(dataByLonLat);
+
         d3.json("/data/attacks_per_year.json")
             .then(function(attacksPeryear) {
                 console.log(attacksPeryear);
