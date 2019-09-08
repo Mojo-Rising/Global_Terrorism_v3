@@ -17,6 +17,8 @@ var countries;
 var deviceResolution = window.devicePixelRatio;
 var paper;
 
+var geoLocateData;
+
 d3.json("data/world50m.json")
     .then(function(world110) {
         console.log("world data loaded");
@@ -39,53 +41,19 @@ d3.csv("/data/globalterrorismdb_0718dist-csv.csv")
         console.log("dataset loaded");
         data = dataset;
 
-        var countPerYear = {};
-
-        // console.log(+data[data.length-1].iyear);
-
-        // for(i = +data[0].iyear; i <= +data[data.length-1].iyear; i++) {
-        //     countPerYear[i] = 0;
-        //     console.log(i);
-        // }
-
-        // for(i = 0; i < data.length; i++) {
-        //     var key = +data[i].iyear;
-        //     //console.log(key);
-        //     //countPerYear.key += data[i].nkills;
-        //     countPerYear[key]++;
-        // }
-
-        // console.log(countPerYear);
-
-        var latRange = d3.extent(data, function(d) {
-            return +d.latitude;
-        });
-
-        var lonRange = d3.extent(data, function(d) {
-            return +d.longitude;
-        });
-
-        console.log("latRange-min: " + latRange[0] + ", latRange-max: " + latRange[1] + ", lonRange-min: " + lonRange[0] + ", lonRange-max: " + lonRange[1]);
-
-        var dataByLonLat = {};
-
-        // for(i = Math.floor(lonRange[0]); i <= Math.floor(lonRange[1]); i++) {
-        //     // var lonKey = i;
-        //     // dataByLonLat[lonKey] =[];
-        //     for(j = Math.floor(latRange[0]); j <= Math.floor(latRange[1]); j++) {
-        //         // var latKey = j;
-        //         // dataByLonLat[lonKey][latKey] = [];
-        //     }
-        // }
-
-        console.log(dataByLonLat);
-
         d3.json("/data/attacks_per_year.json")
             .then(function(attacksPeryear) {
                 console.log(attacksPeryear);
             }).catch(function(error) {
                 throw error;
-        })
+        });
+
+        d3.json("/data/dataByLonLat_small.json")
+            .then(function(indexedData) {
+                geoLocateData = indexedData;
+            }).catch(function(error) {
+                throw error;
+        });
 
 
         cf = crossfilter(data);                
