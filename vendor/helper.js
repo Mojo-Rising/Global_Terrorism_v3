@@ -376,7 +376,8 @@ function CreateBrush(data){
     //On a click recenter the brush window
     gBrush.select(".background")
       .on("mousedown.brush", brushcenter)
-      .on("touchstart.brush", brushcenter);
+      .on("touchstart.brush", brushcenter)
+      .on("end", filterData);
     
     
       context.append("g")
@@ -432,7 +433,13 @@ function brushed() {
     absolutePositionMax = +d3.select(".handle--w").attr("x")+3;
     console.log("absolutePositionMin "+Math.round(x.invert(absolutePositionMin)));
     console.log("absolutePositionMax "+Math.round(x.invert(absolutePositionMax)));
-    console.log(x.invert())
+    console.log(x.invert());
+
+    
+}
+
+function filterData() {
+  console.log("mouseup");
 }
 
 

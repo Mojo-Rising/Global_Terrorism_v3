@@ -88,15 +88,6 @@ function draw(type, r) {
         .style('stroke', '#000')
         .style('stroke-width', '2px')
         .attr("d", path);
-
-    // paper.append("path")
-    //     .datum(graticule)
-    //     .style("fill", "none")
-    //     .style("stroke", '#777')
-    //     .style("stroke-width", '.5px')
-    //     .style("stroke-opacity", 0.5)
-    //     .attr("d", path);
-
     
 
     paper.selectAll(".country")
@@ -128,20 +119,6 @@ function draw(type, r) {
 var customBase = document.createElement("custom");
 
 var custom = d3.select(customBase);
-
-// let drawCirclesPromise = new Promise((resolve, reject) => {
-//     const ctx = document.getElementById('texture-canvas').getContext('2d');
-//     ctx.save();
-
-//     for (let i = 0; i < data.length; i++) {      
-//         var coords = projection([data[i].longitude, data[i].latitude]);
-//         if(i % 100 == 0) console.log("drawing 100th circle");
-//         ctx.fillStyle = "#FF0000";
-//         ctx.fillRect(coords[0]*1.5, coords[1]*1.5, 5, 5);
-//     }
-
-
-// })
 
 function databind(data) {
     console.log(data);
@@ -192,17 +169,9 @@ function drawCircles(data) {
         var radius = 5;
 
         ctx.beginPath();
-        //ctx.arc((coords[0]*deviceResolution) - (radius / 2), (coords[1]*deviceResolution) - (radius / 2), radius, 0, 2 * Math.PI, false);
         ctx.arc((coords[0]*deviceResolution), (coords[1]*deviceResolution), radius, 0, 2 * Math.PI, false);
         ctx.fillStyle = colour;
         ctx.fill();
-        //ctx.lineWidth = 5;
-        //ctx.strokeStyle = '#003300';
-        //ctx.stroke();
-        
-        
-        //ctx.fillStyle = colour;
-        //ctx.fillRect(coords[0]*deviceResolution, coords[1]*deviceResolution, 5, 5);
     }
 
 
@@ -272,11 +241,6 @@ function filterByVar(varName) {
         element.classed("active", false);
     }
 
-    // if(arr.length < 1) {
-    //     dimension.filterAll();
-    //     return;
-    // } else 
-
 
 
     if(arr.includes(key)) {
@@ -301,7 +265,6 @@ function filterByVar(varName) {
         });
     }
 
-    //databind(dimension.top(Infinity));
     draw("canvas");
     setTimeout(function() { drawCircles(dimension.top(Infinity)); }, 10);
     console.log("getFilterResult function finished");

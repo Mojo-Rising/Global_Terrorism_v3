@@ -171,6 +171,8 @@ DAT.Globe = function(container, opts) {
 
     container.addEventListener('mousedown', onMouseDown, false);
 
+    container.addEventListener('mousemove', onMouseMoveDataRetrieval, false);
+
     //container.addEventListener('mousewheel', onMouseWheel, false);
 
     document.addEventListener('keydown', onDocumentKeyDown, false);
@@ -320,6 +322,8 @@ DAT.Globe = function(container, opts) {
     subgeo.merge(point.geometry, point.matrix);
   }
 
+  var mouseTarget = { x: 0, y: 0 };
+
   function onMouseDown(event) {
     event.preventDefault();
 
@@ -336,20 +340,62 @@ DAT.Globe = function(container, opts) {
     container.style.cursor = 'move';
   }
 
+  function onMouseMoveDataRetrieval(event) {
+    mouse.x = - event.clientX;
+    mouse.y = event.clientY;
+
+    var mouseOffset = { x: mouse.x - -(w/2), y : mouse.y - (h/2) };
+
+    console.log("mouse offset: ", mouseOffset);
+  }
+
   function onMouseMove(event) {
     mouse.x = - event.clientX;
     mouse.y = event.clientY;
 
+    
+
+    
+
+    
+
+
+    var PI = Math.PI;
+
     var zoomDamp = distance/1000;
 
-    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
-    target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
+    var mouseOffset = { x: mouse.x - -(w/2), y : mouse.y - (h/2) };
 
-    target.y = target.y > PI_HALF ? PI_HALF : target.y;
-    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
+    mouseTarget = { x: mouseTarget.x + (mouseOffset.x * 0.005 * zoomDamp), y: mouseTarget.y + (mouseOffset.y * 0.005 * zoomDamp)};
+
+    
+    console.log("mouse offset: ", mouseOffset);
+
+    
+
+    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
+    target.y = targetOnDown.y + -(mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
+
+    console.log(target.x, target.y);
+
+    //target.y = target.y > PI ? PI : target.y;
+    //target.y = target.y < 0 ? 0 : target.y;
+
+    var geoTarget = reverse2DPosition({ x: target.x, y: target.y });
+    var accessor = { lon : Math.floor(geoTarget.lon), lat : Math.floor(geoTarget.lat) }
+
+    //console.log(target.x, target.y);
+
+    //console.log(target);
+    //console.log(rotation);
+
+    //console.log(accessor);
+
+    console.log(geoLocateData[accessor.lon][accessor.lat]);
   }
 
   function onMouseUp(event) {
+    console.log("mouse Target: ", mouseTarget);
     container.removeEventListener('mousemove', onMouseMove, false);
     container.removeEventListener('mouseup', onMouseUp, false);
     container.removeEventListener('mouseout', onMouseOut, false);
@@ -500,11 +546,10 @@ DAT.Globe = function(container, opts) {
     // camera.updateProjectionMatrix();
     // console.log(svgWidth.offsetWidth / offsetLeft.offsetWidth, svgWidth.offsetHeight);
     // renderer.setSize(w, h);
-    //renderer.setSize( container.offsetWidth, 800 );
+    // renderer.setSize( container.offsetWidth, 800 );
   }
 
   function zoom(delta) {
-    console.log("calling zoom");
     distanceTarget -= delta;
     distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
     distanceTarget = distanceTarget < 350 ? 350 : distanceTarget;
@@ -515,13 +560,26 @@ DAT.Globe = function(container, opts) {
     render();
   }
 
+  var lastRotation = rotation;
+
   function render() {
     
     zoom(curZoomSpeed);
 
+    // console.log(target);
+    // console.log(rotation);
+
+
+    if(!lastRotation.x == rotation && !lastRotation.y == rotation.y) {
+      // console.log(target);
+      // console.log(rotation);
+    }
+
     rotation.x += (target.x - rotation.x) * 0.1;
     rotation.y += (target.y - rotation.y) * 0.1;
     distance += (distanceTarget - distance) * 0.3;
+
+    lastRotation = rotation;
 
     camera.position.x = distance * Math.sin(rotation.x) * Math.cos(rotation.y);
     camera.position.y = distance * Math.sin(rotation.y);
